@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Triwid Mui | Horror Archive"
+version = "1.0.0"
+id = "artifacts/horror-archive"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21033
+
+[services.development]
+run = "pnpm --filter @workspace/horror-archive run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/horror-archive", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/horror-archive/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21033"
+BASE_PATH = "/"

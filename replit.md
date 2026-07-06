@@ -1,44 +1,56 @@
-# [Project name]
+# Triwid Mui | Horror Archive
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A deeply immersive horror story archive web app for Indonesian horror author Triwid Mui. Features animated title, loading screen, Buy/Read flow, multi-language blog stories (ID/EN/JP), horror ambient audio, and glitch/blood CSS effects.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/horror-archive run dev` — run the frontend (served at `/`)
+- `pnpm --filter @workspace/api-server run dev` — run the API server (handles blog feed proxy at `/api/feeds`)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Frontend: React + Vite (artifacts/horror-archive)
+- API: Express 5 (artifacts/api-server) — used as CORS proxy for Blogger RSS feeds
+- No database — content pulled live from Blogger JSON API and static assets
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/horror-archive/src/screens/` — all screen components (Title, Loading, Menu, Buy, Read, StoryList)
+- `artifacts/horror-archive/src/components/` — AudioPlayer, AdsgramBanner, LanguageSwitcher, SupportButton
+- `artifacts/horror-archive/public/` — static images: diary-octavia-cover.jpg, zahra-cover.jpg, oni-demon.jpg
+- `artifacts/api-server/src/routes/feeds.ts` — Blogger RSS feed proxy (fixes CORS)
+- `artifacts/horror-archive/src/index.css` — horror theme: scanlines, blood drip, glitch, vignette
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Blog feeds fetched server-side via `/api/feeds?url=...` proxy to avoid browser CORS restrictions
+- Web Audio API generates procedural horror ambient drone (low-frequency oscillator + LFO) on first user click
+- Screen state managed with simple React useState (no router) — type ScreenState covers all screens
+- Adsgram.ai SDK loaded via script tag in index.html; AdsgramBanner component handles initialization
+- Images stored in `public/` folder so Vite serves them at root paths
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Title screen: animated "TRIWID MUI | HORROR ARCHIVE" with blood drip + glitch effects
+- Loading screen: rotating sigil + rotating eerie text phrases
+- Main Menu: READ and BUY gothic buttons
+- Buy: 2 novels (Diary Octavia + Zahra) with covers and purchase links
+- Read: 3 language tabs → fetches live stories from Blogger (ID/EN) or links to Pixiv (JP)
+- Persistent: language switcher (corner), support/donate button (Saweria)
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+_Populate as you build._
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Blogger feed proxy only allows the 2 whitelisted feed URLs (see `artifacts/api-server/src/routes/feeds.ts`)
+- Adsgram blockId must be set manually in AdsgramBanner.tsx (left as a TODO placeholder)
+- Audio starts only on first user interaction (browser autoplay policy)
+- After editing the API server, run `pnpm --filter @workspace/api-server run build` before restarting the workflow
 
 ## Pointers
 

@@ -30,61 +30,71 @@ export function StoryListScreen({
       return;
     }
 
+    const parseEntries = (data: any): StoryEntry[] => {
+      const entries = data?.feed?.entry || [];
+      return entries.map((entry: any) => {
+        const linkObj = entry.link?.find((l: any) => l.rel === 'alternate');
+        const link = linkObj ? linkObj.href : '#';
+
+        const rawContent = entry.content?.$t || entry.summary?.$t || '';
+        const tmp = document.createElement('DIV');
+        tmp.innerHTML = rawContent;
+        const textContent = tmp.textContent || tmp.innerText || '';
+        const excerpt = textContent.trim().substring(0, 180) + '...';
+
+        // Blogger thumbnail — upgrade ke ukuran lebih besar
+        let thumbnail: string | undefined = entry.media$thumbnail?.url;
+        if (thumbnail) {
+          thumbnail = thumbnail.replace(/\/s[0-9]+-c\//, '/s400/').replace(/=s[0-9]+-c$/, '=s400');
+        }
+        if (!thumbnail) {
+          const imgMatch = rawContent.match(/<img[^>]+src=["']([^"']+)["']/);
+          if (imgMatch) thumbnail = imgMatch[1];
+        }
+
+        const date = new Date(entry.published?.$t).toLocaleDateString('id-ID', {
+          year: 'numeric', month: 'long', day: 'numeric'
+        });
+
+        return {
+          id: entry.id?.$t ?? link,
+          title: entry.title?.$t ?? '(Tanpa Judul)',
+          excerpt,
+          date,
+          link,
+          thumbnail
+        };
+      });
+    };
+
     const fetchStories = async () => {
       setLoading(true);
       setError(false);
-      
+
       const feedBase = type === 'stories-id'
         ? 'https://triwidmui-horor-indo.blogspot.com/feeds/posts/default'
         : 'https://triwidmui-en-horror.blogspot.com/feeds/posts/default';
 
       const directUrl = `${feedBase}?alt=json&max-results=20`;
+      const proxyUrl  = `https://api.allorigins.win/raw?url=${encodeURIComponent(directUrl)}`;
 
       try {
-        const res = await fetch(directUrl);
-        if (!res.ok) throw new Error('Network response was not ok');
+        // Coba langsung dulu
+        let res = await fetch(directUrl);
+        if (!res.ok) throw new Error('direct failed');
         const data = await res.json();
-        
-        const entries = data?.feed?.entry || [];
-        
-        const parsedStories = entries.map((entry: any) => {
-          // Extract link
-          const linkObj = entry.link.find((l: any) => l.rel === 'alternate');
-          const link = linkObj ? linkObj.href : '#';
-          
-          // Extract excerpt (strip HTML)
-          const rawContent = entry.summary?.$t || entry.content?.$t || '';
-          const tmp = document.createElement('DIV');
-          tmp.innerHTML = rawContent;
-          const textContent = tmp.textContent || tmp.innerText || '';
-          const excerpt = textContent.substring(0, 150) + '...';
-
-          // Extract thumbnail
-          let thumbnail = entry.media$thumbnail?.url;
-          if (!thumbnail) {
-            const imgMatch = rawContent.match(/<img[^>]+src="([^">]+)"/);
-            if (imgMatch) thumbnail = imgMatch[1];
-          }
-
-          // Parse date
-          const date = new Date(entry.published?.$t).toLocaleDateString('id-ID', {
-            year: 'numeric', month: 'long', day: 'numeric'
-          });
-
-          return {
-            id: entry.id.$t,
-            title: entry.title.$t,
-            excerpt,
-            date,
-            link,
-            thumbnail
-          };
-        });
-
-        setStories(parsedStories);
-      } catch (err) {
-        console.error("Failed to fetch stories:", err);
-        setError(true);
+        setStories(parseEntries(data));
+      } catch {
+        try {
+          // Fallback: pakai CORS proxy
+          const res2 = await fetch(proxyUrl);
+          if (!res2.ok) throw new Error('proxy failed');
+          const data2 = await res2.json();
+          setStories(parseEntries(data2));
+        } catch (err) {
+          console.error("Failed to fetch stories:", err);
+          setError(true);
+        }
       } finally {
         setLoading(false);
       }

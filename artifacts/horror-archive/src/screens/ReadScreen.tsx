@@ -2,6 +2,18 @@ import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { ScreenState } from '../App';
 
+function showAdThenNavigate(destination: ScreenState, onNavigate: (screen: ScreenState) => void) {
+  const AdController = (window as any).Adsgram?.init({ blockId: 'int-37565' });
+  if (AdController) {
+    AdController.show()
+      .then(() => onNavigate(destination))
+      .catch(() => onNavigate(destination));
+  } else {
+    // Adsgram SDK belum load, langsung navigasi
+    onNavigate(destination);
+  }
+}
+
 export function ReadScreen({ onNavigate }: { onNavigate: (screen: ScreenState) => void }) {
   return (
     <motion.div
@@ -24,7 +36,7 @@ export function ReadScreen({ onNavigate }: { onNavigate: (screen: ScreenState) =
 
       <div className="flex flex-col gap-6 w-full max-w-md">
         <button 
-          onClick={() => onNavigate('stories-id')}
+          onClick={() => showAdThenNavigate('stories-id', onNavigate)}
           className="group relative flex items-center justify-center py-6 px-8 border border-[#8B0000] bg-[#8B0000]/10 hover:bg-[#8B0000] transition-all duration-500 overflow-hidden"
         >
           <div className="absolute inset-0 bg-noise opacity-10 mix-blend-overlay"></div>
@@ -34,7 +46,7 @@ export function ReadScreen({ onNavigate }: { onNavigate: (screen: ScreenState) =
         </button>
 
         <button 
-          onClick={() => onNavigate('stories-en')}
+          onClick={() => showAdThenNavigate('stories-en', onNavigate)}
           className="group relative flex items-center justify-center py-6 px-8 border border-[#660000] bg-[#660000]/10 hover:bg-[#660000] transition-all duration-500 overflow-hidden"
         >
           <div className="absolute inset-0 bg-noise opacity-10 mix-blend-overlay"></div>

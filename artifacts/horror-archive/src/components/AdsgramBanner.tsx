@@ -2,10 +2,15 @@ import { useEffect } from 'react';
 
 export function AdsgramBanner() {
   useEffect(() => {
-    const blockId = 'int-37563';
-    if ((window as any).Adsgram) {
-      const ad = (window as any).Adsgram.init({ blockId });
-      ad.show().catch(console.error);
+    const AdController = (window as any).Adsgram?.init({ blockId: 'int-37565' });
+    if (AdController) {
+      AdController.show()
+        .then(() => {
+          // user watched ad till end or closed it (interstitial)
+        })
+        .catch(() => {
+          // user got error during ad
+        });
     }
   }, []);
 

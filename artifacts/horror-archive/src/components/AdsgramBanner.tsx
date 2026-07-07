@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 export function AdsgramBanner() {
   useEffect(() => {
-    const blockId = '8376787434';
+    const blockId = 'int-37563';
     if ((window as any).Adsgram) {
       const ad = (window as any).Adsgram.init({ blockId });
       ad.show().catch(console.error);

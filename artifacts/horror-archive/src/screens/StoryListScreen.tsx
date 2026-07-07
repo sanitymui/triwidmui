@@ -38,10 +38,10 @@ export function StoryListScreen({
         ? 'https://triwidmui-horor-indo.blogspot.com/feeds/posts/default'
         : 'https://triwidmui-en-horror.blogspot.com/feeds/posts/default';
 
-      const proxyUrl = `/api/feeds?url=${encodeURIComponent(feedBase)}`;
+      const directUrl = `${feedBase}?alt=json&max-results=20`;
 
       try {
-        const res = await fetch(proxyUrl);
+        const res = await fetch(directUrl);
         if (!res.ok) throw new Error('Network response was not ok');
         const data = await res.json();
         

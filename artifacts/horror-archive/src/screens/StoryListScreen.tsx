@@ -172,21 +172,6 @@ export function StoryListScreen({
             {type === 'stories-id' ? 'Menarik jiwa dari kegelapan...' : 'Summoning lost souls...'}
           </p>
         </div>
-      ) : error ? (
-        <div className="flex flex-col items-center justify-center py-20 border border-primary/20 bg-card/20 p-8 text-center">
-          <p className="font-display text-2xl text-primary mb-4 tracking-widest">KUTUKAN MENGHALANGI JALAN</p>
-          <p className="text-muted-foreground font-serif italic mb-6">
-            Gagal memuat cerita dari arsip. Kekuatan gelap memutuskan koneksi.
-          </p>
-          <a 
-            href={blogUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-primary hover:text-accent font-mono border-b border-primary/30 pb-1"
-          >
-            Kunjungi Blog Langsung <ExternalLink size={16} />
-          </a>
-        </div>
       ) : stories.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 border border-border bg-card/10 text-center">
           <p className="font-display text-2xl text-muted-foreground tracking-widest">

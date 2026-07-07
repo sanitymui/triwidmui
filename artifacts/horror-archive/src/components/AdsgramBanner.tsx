@@ -2,12 +2,11 @@ import { useEffect } from 'react';
 
 export function AdsgramBanner() {
   useEffect(() => {
-    // // TODO: Set your Adsgram blockId here
-    // const blockId = 'YOUR_BLOCK_ID'; 
-    // if (window.Adsgram) {
-    //   const ad = window.Adsgram.init({ blockId });
-    //   ad.show().catch(console.error);
-    // }
+    const blockId = '8376787434';
+    if ((window as any).Adsgram) {
+      const ad = (window as any).Adsgram.init({ blockId });
+      ad.show().catch(console.error);
+    }
   }, []);
 
   return (

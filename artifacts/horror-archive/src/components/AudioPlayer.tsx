@@ -6,17 +6,6 @@ export function AudioPlayer() {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
 
-  useEffect(() => {
-    const handleInteraction = () => {
-      if (!audioCtxRef.current) {
-        initAudio();
-        setIsPlaying(true);
-      }
-    };
-    window.addEventListener('click', handleInteraction, { once: true });
-    return () => window.removeEventListener('click', handleInteraction);
-  }, []);
-
   const initAudio = () => {
     const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
     audioCtxRef.current = ctx;
@@ -66,6 +55,12 @@ export function AudioPlayer() {
   };
 
   const toggleMute = () => {
+    if (!audioCtxRef.current) {
+      // Inisialisasi langsung saat pertama kali klik tombol audio
+      initAudio();
+      setIsPlaying(true);
+      return;
+    }
     if (gainNodeRef.current) {
       if (isPlaying) {
         gainNodeRef.current.gain.value = 0;

@@ -1,19 +1,4 @@
-import { useEffect } from 'react';
-
 export function AdsgramBanner() {
-  useEffect(() => {
-    const AdController = (window as any).Adsgram?.init({ blockId: 'int-37565' });
-    if (AdController) {
-      AdController.show()
-        .then(() => {
-          // user watched ad till end or closed it (interstitial)
-        })
-        .catch(() => {
-          // user got error during ad
-        });
-    }
-  }, []);
-
   return (
     <div id="adsgram-container" className="w-full flex justify-center mt-16 mb-8 min-h-[60px] opacity-60 border border-primary/20 bg-black/40 relative overflow-hidden">
        <div className="absolute inset-0 scanlines opacity-30"></div>

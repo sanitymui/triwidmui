@@ -182,10 +182,19 @@ export function StoryListScreen({
             {type === 'stories-id' ? 'Menarik jiwa dari kegelapan...' : 'Summoning lost souls...'}
           </p>
         </div>
+      ) : error ? (
+        <div className="flex flex-col items-center justify-center py-20 border border-primary/20 bg-card/10 p-8 text-center">
+          <p className="font-display text-2xl text-primary mb-4 tracking-widest">SINYAL TERPUTUS</p>
+          <p className="text-muted-foreground font-serif italic text-sm">
+            {type === 'stories-id'
+              ? 'Arsip tidak dapat dijangkau. Coba lagi nanti.'
+              : 'Archive unreachable. Please try again later.'}
+          </p>
+        </div>
       ) : stories.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 border border-border bg-card/10 text-center">
           <p className="font-display text-2xl text-muted-foreground tracking-widest">
-            Kegelapan menutupi segalanya... (Arsip kosong)
+            {type === 'stories-id' ? 'Arsip masih kosong...' : 'Archive is empty...'}
           </p>
         </div>
       ) : (

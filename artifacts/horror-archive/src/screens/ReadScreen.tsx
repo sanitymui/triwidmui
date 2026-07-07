@@ -2,16 +2,13 @@ import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { ScreenState } from '../App';
 
-function showAdThenNavigate(destination: ScreenState, onNavigate: (screen: ScreenState) => void) {
-  const AdController = (window as any).Adsgram?.init({ blockId: 'int-37565' });
-  if (AdController) {
-    AdController.show()
-      .then(() => onNavigate(destination))
-      .catch(() => onNavigate(destination));
-  } else {
-    // Adsgram SDK belum load, langsung navigasi
-    onNavigate(destination);
+async function showAdThenNavigate(destination: ScreenState, onNavigate: (screen: ScreenState) => void) {
+  try {
+    await (window as any).Adsgram.init({ blockId: 'int-37565' }).show();
+  } catch (_) {
+    // tidak ada banner atau error — lanjut saja
   }
+  onNavigate(destination);
 }
 
 export function ReadScreen({ onNavigate }: { onNavigate: (screen: ScreenState) => void }) {

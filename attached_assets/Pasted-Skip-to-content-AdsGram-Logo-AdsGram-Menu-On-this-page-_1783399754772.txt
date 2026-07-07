@@ -1,0 +1,103 @@
+Skip to content
+AdsGram Logo
+AdsGram
+
+
+Menu
+On this page
+Sidebar Navigation
+Advertise
+Monetize app
+Introduction
+About
+
+Ad integration examples
+Reward ad
+
+Interstitial ad
+
+Task ad
+
+Get blockId
+
+Code Integration
+Reward and interstitial ads
+Integration
+
+Code examples
+
+Task ad
+Integration
+
+Code examples
+
+Troubleshooting
+
+Documentation for LLMs
+
+Reference
+API Reference
+
+Typescript
+
+Archive
+
+Moderation
+
+Glossary
+
+Monetize channels
+Monetize bots
+Interstitial ad
+Full-screen ad that should appear at natural breakpoints, covering the entire screen. User can close or interact with the ad before continuing. Can be both Video and Post type
+
+Interstitial videoInterstitial post
+Simple code example
+In interstitial format you don't need to reward the user, so you can call show function in one row. In catch you can get errors like error during playing ad or error if no banner to show. You can handle error or just do nothing.
+
+
+javascript
+js
+try {
+    // code to show banner
+  await window.Adsgram.init({ blockId: "your-block-id" }).show();
+} catch (error) {
+    // user get error during playing ad or no banner to show
+    // do nothing or whatever you want
+}
+WARNING
+
+blockId in interstitial ads must be in the format 'int-xxx', where xxx are numbers.
+
+Show ad requirements
+In order for advertising to bring money to you and not cause negative emotions in the user, it must be:
+
+placed in natural user breaks in an app (for example, during transitions in an app or between game levels)
+should not appear after every user action
+after watching or closing an ad, the user should resume exactly where he logically expect to be
+Interstitial types
+There are several types of interstitial formats you can use. The below types are just examples, you can create any interstitial suitable for your App.
+
+app loading
+transition between pages
+transition between game levels
+any interstitial suitable for your App
+App loading
+Show an ad when user open the app.
+
+Transition between pages
+When user open page. You shouldn't show an ad for every page to avoid negative user experience
+
+Transition between game levels
+When user has completed a game level. After watching an ad user redirects to the next level
+
+Any interstitial suitable for your App
+The examples above are not the only possible ones. There may be a more suitable place for advertising in your application
+
+Last updated: 06/07/26, 20.59
+
+Pager
+Previous page
+Reward ad
+Next page
+Task ad

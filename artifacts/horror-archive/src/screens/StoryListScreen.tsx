@@ -76,28 +76,33 @@ export function StoryListScreen({
         : 'https://triwidmui-en-horror.blogspot.com/feeds/posts/default';
 
       const directUrl = `${feedBase}?alt=json&max-results=20`;
-      const proxyUrl  = `https://api.allorigins.win/raw?url=${encodeURIComponent(directUrl)}`;
 
-      try {
-        // Coba langsung dulu
-        let res = await fetch(directUrl);
-        if (!res.ok) throw new Error('direct failed');
-        const data = await res.json();
-        setStories(parseEntries(data));
-      } catch {
+      const proxies = [
+        directUrl,
+        `https://corsproxy.io/?url=${encodeURIComponent(directUrl)}`,
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(directUrl)}`,
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(directUrl)}`,
+      ];
+
+      let lastErr: unknown;
+      for (const url of proxies) {
         try {
-          // Fallback: pakai CORS proxy
-          const res2 = await fetch(proxyUrl);
-          if (!res2.ok) throw new Error('proxy failed');
-          const data2 = await res2.json();
-          setStories(parseEntries(data2));
+          const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+          if (!res.ok) throw new Error(`status ${res.status}`);
+          const text = await res.text();
+          const data = JSON.parse(text);
+          const parsed = parseEntries(data);
+          setStories(parsed);
+          setLoading(false);
+          return;
         } catch (err) {
-          console.error("Failed to fetch stories:", err);
-          setError(true);
+          lastErr = err;
         }
-      } finally {
-        setLoading(false);
       }
+
+      console.error("All proxies failed:", lastErr);
+      setError(true);
+      setLoading(false);
     };
 
     fetchStories();
